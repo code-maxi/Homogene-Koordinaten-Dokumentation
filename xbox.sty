@@ -1,0 +1,379 @@
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{xbox}[2020/10/20 xbox] % by Matthias Bornhofen
+
+\catcode`°=11         % '°' ist letter!
+
+\usepackage{xparse}   % Flexible Syntax von LaTeX3
+\usepackage{xstring}  % Substitute Substrings!
+\usepackage{ifthen}   % \ifthenelse
+\usepackage{adjustbox}% adjustbox für xbox
+
+\newboolean{frame}\setboolean{frame}{false}
+
+
+% === "Quotient or Length?" :: \lengthcheck[10cm]{1.3} = 13cm, \lengthcheck[10cm]{7ex} = 7ex
+\newlength{\oneex}\setlength{\oneex}{1ex}
+\newlength{\onept}\setlength{\onept}{1pt}
+\newlength{\onecm}\setlength{\onecm}{1cm}
+\newlength{\lengthresult}\setlength{\lengthresult}{0pt}%
+\newcommand{\lengthcheck}[2][\linewidth]{%
+\setlength{\lengthresult}{#1}%
+\pgfmathparse{#2}%
+\ifpgfmathunitsdeclared
+\setlength{\lengthresult}{\pgfmathresult\onept}%
+\else
+\setlength{\lengthresult}{\pgfmathresult\lengthresult}%
+\fi
+}
+%
+% --- ifempty :: \ifempty{test}{yes}{no}
+\def\ifempty#1#2#3{\protect\ifthenelse{\equal{#1}{}}{#2}{#3}}
+\def\ifpoint#1#2#3{\ifthenelse{\equal{#1}{.}}{#2}{#3}}
+\def\ifstar#1#2#3{\ifthenelse{\equal{#1}{*}}{#2}{#3}}
+\def\ifjoker#1#2#3{%
+  \ifempty{#1}{#2}{%
+  \ifpoint{#1}{#2}{%
+  \ifstar{#1}{#2}{%
+  #3}}}%
+}
+%
+% --- h & v :: \H[length], \V[length], \h[length], \v[height], \hq \hqq \hqb \hqqb \vp \vpb \vx \vxb \vxx \VP \P
+\renewcommand*{\H}[1][]{\ifthenelse{\equal{#1}{}}{\hspace{\fill}}{\lengthcheck{#1}\hspace{\lengthresult}}}% [\H::LaTeX]
+\newcommand*{\V}[1][]{\ifthenelse{\equal{#1}{}}{\vspace{\fill}}{\vspace{#1}}}
+\newcommand*{\h}[1][]{\ifthenelse{\equal{#1}{}}{\hspace*{\fill}}{\lengthcheck{#1}\hspace*{\lengthresult}}}
+\renewcommand*{\v}[1][]{\ifthenelse{\equal{#1}{}}{\vspace*{\fill}}{\vspace*{#1}}}% [\v::LaTeX]
+\newcommand*{\hq}{\h[1em]}\newcommand*{\hqb}{\h[-1em]}
+\newcommand*{\hqq}{\hq\hq}\newcommand*{\hqqb}{\hqb\hqb}
+\newcommand*{\hqqq}{\hq\hq\hq}\newcommand*{\hqqqb}{\hqb\hqb\hqb}
+\newcommand*{\hqqqq}{\hq\hq\hq\hq}\newcommand*{\hqqqqb}{\hqb\hqb\hqb\hqb}
+\newcommand*{\hqqqqq}{\hq\hq\hq\hq\hq}\newcommand*{\hqqqqqb}{\hqb\hqb\hqb\hqb\hqb}
+\newcommand*{\hqqqqqq}{\hq\hq\hq\hq\hq\hq}\newcommand*{\hqqqqqqb}{\hqb\hqb\hqb\hqb\hqb\hqb}
+\newcommand*{\vx}{\v[1ex]}\newcommand*{\vxb}{\v[-1ex]}
+\newcommand*{\vxx}{\vx\vx}\newcommand*{\vxxb}{\vxb\vxb}
+\newcommand*{\vxxx}{\vx\vx\vx}\newcommand*{\vxxxb}{\vxb\vxb\vxb}
+\newcommand*{\vxxxx}{\vx\vx\vx\vx}\newcommand*{\vxxxxb}{\vxb\vxb\vxb\vxb}
+\newcommand*{\vxxxxx}{\vx\vx\vx\vx\vx}\newcommand*{\vxxxxxb}{\vxb\vxb\vxb\vxb\vxb}
+\newcommand*{\vxxxxxx}{\vx\vx\vx\vx\vx\vx}\newcommand*{\vxxxxxxb}{\vxb\vxb\vxb\vxb\vxb\vxb}
+\newcommand*{\vp}{\v[\PARSKIP]}\newcommand*{\vpb}{\v[-\PARSKIP]}
+\newcommand*{\VP}{\V[\paragraphskip]}
+\renewcommand*{\P}{\par\VP\par}% [\P::LaTeX]
+%
+\newcommand*{\VS}{{\normalfont\Large\bfseries\V[3.5ex plus1ex minus0.2ex]}}% übernommen von article.cls
+\newcommand*{\Vs}{{\normalfont\large\bfseries\V[3.25ex plus1ex minus0.2ex]}}
+\newcommand*{\Vss}{{\normalfont\normalsize\bfseries\V[3.25ex plus1ex minus0.2ex]}}
+%
+%
+\newcommand*{\arrayspread}[1][]{\ifthenelse{\equal{#1}{}}{}{\renewcommand{\arraystretch}{#1}}}%
+%
+% --- tab :: \begin{tab}[stretch][b]{ll} ... \\ ... \end{tab}
+\DeclareDocumentEnvironment{tab}{ O{} O{} m }{%
+\ifthenelse{\equal{#1}{t}}{\arrayspread[#2]\begin{tabular}[t]{@{}#3@{}}}{%
+\ifthenelse{\equal{#1}{c}}{\arrayspread[#2]\begin{tabular}[]{@{}#3@{}}}{%
+\ifthenelse{\equal{#1}{m}}{\arrayspread[#2]\begin{tabular}[]{@{}#3@{}}}{%
+\ifthenelse{\equal{#1}{b}}{\arrayspread[#2]\begin{tabular}[b]{@{}#3@{}}}{%
+\ifthenelse{\equal{#2}{t}}{\arrayspread[#1]\begin{tabular}[t]{@{}#3@{}}}{%
+\ifthenelse{\equal{#2}{c}}{\arrayspread[#1]\begin{tabular}[]{@{}#3@{}}}{%
+\ifthenelse{\equal{#2}{m}}{\arrayspread[#1]\begin{tabular}[]{@{}#3@{}}}{%
+\ifthenelse{\equal{#2}{b}}{\arrayspread[#1]\begin{tabular}[b]{@{}#3@{}}}%
+                          {\arrayspread[#1]\begin{tabular}[t]{@{}#3@{}}}}}}}}}}%
+}{\end{tabular}}
+%
+% --- tab* :: \begin{tab*}[stretch][t]{ll} ... \\ ... \* ... \\ ... \* ... \\ ... \end{tab*}
+\DeclareDocumentEnvironment{tab*}{O{} O{} m}{%
+\newcommand{\BeginTab}{\begin{tab}[#1][#2]{#3}}
+\renewcommand{\*}[1][\fill]{\end{tab}\h[##1]\BeginTab}
+\arrayspread[#1]%
+\BeginTab%
+}{%
+\end{tab}}
+%
+% --- xbox :: \xbox*[t][2ex]<Wort>(+2cm,+2cm)[bl]{...}(xoffset,xoffset)
+\DeclareDocumentCommand \xbox { s O{} O{0pt} d<> D(){+0pt,+0pt} O{} m D(){+0pt,+0pt} }{%
+  {%
+  \def\xbox°frame{}%
+  \IfBooleanTF{#1}{%
+    \def\xbox°frame{*}%
+  }{%
+    \ifframe
+    \def\xbox°frame{*}%
+    \fi
+  }%
+  %
+  \XBOX[#2][#3]<#4>(#5)[#6]{#7}(#8)%
+  }%
+}%
+
+\DeclareDocumentCommand \Xbox { s O{} O{0pt} d<> D(){+0pt,+0pt} O{} m D(){+0pt,+0pt} }{%
+  {%
+  \def\xbox°frame{}%
+  \IfBooleanTF{#1}{%
+    \def\xbox°frame{*}%
+  }{%
+    \ifframe
+    \def\xbox°frame{*}%
+    \fi
+  }%
+  %
+  \IfNoValueTF{#4}{%
+    \XBOX[#2][#3]<#4>(#5)[#6]{$#7$}(#8)% sonst: $-NoValue-$ :-)
+  }{%
+    \XBOX[#2][#3]<$#4$>(#5)[#6]{$#7$}(#8)%
+  }%
+  }%
+}%
+
+\newlength{\xbox°height}
+\newlength{\xbox°depth}
+\newlength{\xbox°totalheight}
+\newlength{\xbox°width}
+\newlength{\xbox°extent°x}
+\newlength{\xbox°extent°y}
+\newlength{\xbox°offset°x}
+\newlength{\xbox°offset°y}
+\newlength{\xbox°raise}
+\newlength{\xbox°global°raise°totalheight}
+\newlength{\xbox°global°raise}
+\newlength{\xbox°capital} % 1.4ex empirically
+\newsavebox{\xbox°}
+
+\def\XBOX[#1][#2]<#3>(#4,#5)[#6]#7(#8,#9){%
+  \settoheight{\xbox°capital}{M}%                   1.4ex empirically
+  \renewcommand{\adjboxvtop}{\xbox°capital}%        \xboxvtop
+  \renewcommand{\adjboxvcenter}{0.5\xbox°capital}%  \xboxvcenter
+  \renewcommand{\adjboxvbottom}{0pt}%               \xboxvbottom...?
+  %
+  % get dimensions
+  %
+  \IfNoValueTF{#3}{\sbox{\z@}{#7}}{\sbox{\z@}{#3}}%
+  %
+  \settoheight{\xbox°height}{\usebox{\z@}}%
+  \settodepth{\xbox°depth}{\usebox{\z@}}%
+  \setlength{\xbox°totalheight}{\xbox°height}%
+  \addtolength{\xbox°totalheight}{\xbox°depth}%
+  \settowidth{\xbox°width}{\usebox{\z@}}%
+  %
+  \IfNoValueTF{#3}{}{\sbox{\z@}{#7}}%
+  %
+  % extent°x
+  %
+  \ifjoker{#4}{\setlength{\xbox°extent°x}{0pt}}{%
+  \lengthcheck{#4}% "squorl!"
+  \IfSubStr{#4}{+}{\setlength{\xbox°extent°x}{\lengthresult}}{%
+  \IfSubStr{#4}{-}{\setlength{\xbox°extent°x}{\lengthresult}}{%
+    \setlength{\xbox°extent°x}{\lengthresult}%
+    \advance \xbox°extent°x by -\xbox°width%
+  }}}%
+  %
+  \ifdim\xbox°width<-\xbox°extent°x
+    \setlength{\xbox°extent°x}{-\xbox°width}%  kleiner als null geht nicht.
+  \fi
+  %
+  \divide \xbox°extent°x by 2%
+  %
+  % extent°y
+  %
+  \ifjoker{#5}{\setlength{\xbox°extent°y}{0pt}}{%
+  \lengthcheck{#5}% "squorl" in y auch mit \linewidth wegen Proportionalität
+  \IfSubStr{#5}{+}{\setlength{\xbox°extent°y}{\lengthresult}}{%
+  \IfSubStr{#5}{-}{\setlength{\xbox°extent°y}{\lengthresult}}{%
+    \setlength{\xbox°extent°y}{\lengthresult}%
+    \advance \xbox°extent°y by -\xbox°totalheight%
+  }}}%
+  %
+  \ifdim\xbox°totalheight<-\xbox°extent°y
+    \setlength{\xbox°extent°y}{-\xbox°totalheight}%  kleiner als null geht nicht.
+  \fi
+  %
+  \divide \xbox°extent°y by 2%
+  %
+  % offset°x
+  %
+  \ifjoker{#8}{\setlength{\xbox°offset°x}{0pt}}{%
+  \IfSubStr{#8}{+}{\setlength{\xbox°offset°x}{#8}}{%
+  \IfSubStr{#8}{-}{\setlength{\xbox°offset°x}{#8}}{%
+    \IfSubStr{#6}{r}{%
+      \setlength{\xbox°offset°x}{-#8}%
+    }{\IfSubStr{#6}{l}{%
+      \setlength{\xbox°offset°x}{#8}%
+    }{}}%
+  }}}%
+  %
+  % offset°y (or padding!)
+  %
+  \ifjoker{#9}{\setlength{\xbox°offset°y}{0pt}}{%
+  \IfSubStr{#9}{+}{\setlength{\xbox°offset°y}{#9}}{% offset: move contents.
+  \IfSubStr{#9}{-}{\setlength{\xbox°offset°y}{#9}}{%
+%  \IfSubStr{#9}{+}{% [use this code to move baseline with offset!]
+%      \addtolength{\xbox°height}{-#9}% padding: move box around! (keep baseline)
+%      \addtolength{\xbox°depth}{#9}%
+%  }{% offset: move contents.
+%  \IfSubStr{#9}{-}{%
+%      \addtolength{\xbox°height}{-#9}% padding: move box around! (keep baseline)
+%      \addtolength{\xbox°depth}{#9}%
+%  }{%
+    \IfSubStr{#6}{t}{%
+%      \setlength{\xbox°offset°y}{-#9}% [use this code to leave baseline!]
+      \addtolength{\xbox°height}{#9}% padding: move box around! (keep baseline)
+      \addtolength{\xbox°depth}{-#9}%
+    }{\IfSubStr{#6}{b}{%
+%      \setlength{\xbox°offset°y}{#9}% [use this code to leave baseline!]
+      \addtolength{\xbox°height}{-#9}%
+      \addtolength{\xbox°depth}{#9}%
+    }{}}%
+  }}}%
+  %
+  % set parameters
+  %
+  \advance\xbox°width by \xbox°extent°x%
+  \advance\xbox°width by \xbox°extent°x%
+  %
+  \IfSubStr{#6}{r}{%
+    \adjustboxset{right=\xbox°width}%
+  }{\IfSubStr{#6}{l}{%
+    \adjustboxset{left=\xbox°width}%
+  }{%
+    \adjustboxset{center=\xbox°width}%
+  }}%
+  %
+  \IfSubStr{#6}{t}{%
+     \advance\xbox°depth by \xbox°extent°y%
+     \advance\xbox°depth by \xbox°extent°y%
+  }{\IfSubStr{#6}{b}{%
+     \advance\xbox°height by \xbox°extent°y%
+     \advance\xbox°height by \xbox°extent°y%
+  }{%
+     \advance\xbox°height by \xbox°extent°y%
+     \advance\xbox°depth by \xbox°extent°y%
+  }}%
+  %
+  \ifdim\xbox°depth<0pt
+     \setlength{\xbox°raise}{\xbox°depth}%
+     \addtolength{\xbox°height}{\xbox°depth}%
+     \setlength{\xbox°depth}{0pt}%
+  \fi
+  %
+  \ifdim\xbox°height<0pt
+     \setlength{\xbox°raise}{-\xbox°height}%
+     \addtolength{\xbox°depth}{\xbox°height}%
+     \setlength{\xbox°height}{0pt}%
+  \fi
+  %
+  % no extent? zero box! (no raise correction.)
+  %
+  \ifdim\xbox°depth=0pt
+  \ifdim\xbox°height=0pt
+  \ifdim\xbox°width=0pt
+    \setlength{\xbox°raise}{0pt}%
+  \fi\fi\fi
+  %
+  \adjustboxset{raise={\xbox°raise}{\xbox°height}{\xbox°depth}}%
+  %
+  % valign and global raise
+  %
+  \setlength{\xbox°global°raise°totalheight}{\xbox°height}% hier erst berechnen!
+  \addtolength{\xbox°global°raise°totalheight}{\xbox°depth}%
+  \addtolength{\xbox°global°raise°totalheight}{-\xbox°capital}%
+  \setlength{\xbox°global°raise}{0pt}%
+  %
+  \ifthenelse{\equal{#1}{} \OR \equal{#1}{*}}{%
+  }{%
+    \ifthenelse{\equal{#1}{t} \OR \equal{#1}{m} \OR \equal{#1}{c} \OR \equal{#1}{b}}{%
+      \adjustboxset{valign=#1}%
+    }{%
+      \lengthcheck[\xbox°global°raise°totalheight]{#1}%
+      \setlength{\xbox°global°raise}{\lengthresult}%
+    }%
+  }%
+  %
+  \ifthenelse{\equal{#2}{} \OR \equal{#2}{*}}{%
+  }{%
+    \ifthenelse{\equal{#2}{t} \OR \equal{#2}{m} \OR \equal{#2}{c} \OR \equal{#2}{b}}{%
+      \adjustboxset{valign=#2}%
+    }{%
+      \lengthcheck[\xbox°global°raise°totalheight]{#2}%
+      \setlength{\xbox°global°raise}{\lengthresult}%
+    }%
+  }%
+  %
+  % frame
+  %
+  \ifempty{\xbox°frame}{}{\adjustboxset*{frame=0.5pt 0pt -0.5pt}}%
+  %
+  % box it!
+  %
+  \savebox{\xbox°}{%
+    \adjustbox{}{%
+      \vphantom{\usebox{\z@}}%
+      \raisebox{\xbox°offset°y}[0ex][0ex]{%
+        \makebox[0pt][l]{%
+          \h[\xbox°offset°x]%
+          \usebox{\z@}%
+        }%
+      \hphantom{\usebox{\z@}}%
+      }%
+    }%
+  }%
+  %
+  \raisebox{\xbox°global°raise}{%
+    \ifempty{#1}{%  Falls orientiert an baseline:
+      \ifdim\xbox°raise=0pt%
+        \usebox{\xbox°}%
+      \else
+        \raisebox{-\xbox°raise}{\usebox{\xbox°}}% Letzte Korrektur bei depth oder height<0!
+      \fi
+    }{%
+      \usebox{\xbox°}%
+    }%
+  }%
+}
+%
+% --- zero boxes: rbox, lbox, cbox, zbox
+\DeclareDocumentCommand \rbox { s d<> O{0pt} m D(){+0pt,+0pt} }{%
+  \IfNoValueTF{#2}{%
+    \IfBooleanTF{#1}{\xbox*(#3,*)[r]{#4}(#5)}{\xbox(#3,*)[r]{#4}(#5)}%
+  }{%
+    \IfBooleanTF{#1}{\xbox*<#2>(*,*)[r]{#4}(#5)}{\xbox<#2>(*,*)[r]{#4}(#5)}%
+  }%
+}
+\DeclareDocumentCommand \Rbox { s d<> O{0pt} m D(){+0pt,+0pt} }{%
+  \IfNoValueTF{#2}{%
+    \IfBooleanTF{#1}{\xbox*(#3,*)[r]{$#4$}(#5)}{\xbox(#3,*)[r]{$#4$}(#5)}%
+  }{%
+    \IfBooleanTF{#1}{\xbox*<$#2$>(*,*)[r]{$#4$}(#5)}{\xbox<$#2$>(*,*)[r]{$#4$}(#5)}%
+  }%
+}
+\DeclareDocumentCommand \lbox { s d<> O{0pt} m D(){+0pt,+0pt} }{%
+  \IfNoValueTF{#2}{%
+    \IfBooleanTF{#1}{\xbox*(#3,*)[l]{#4}(#5)}{\xbox(#3,*)[l]{#4}(#5)}%
+  }{%
+    \IfBooleanTF{#1}{\xbox*<#2>(*,*)[l]{#4}(#5)}{\xbox<#2>(*,*)[l]{#4}(#5)}%
+  }%
+}
+\DeclareDocumentCommand \Lbox { s d<> O{0pt} m D(){+0pt,+0pt} }{%
+  \IfNoValueTF{#2}{%
+    \IfBooleanTF{#1}{\xbox*(#3,*)[l]{$#4$}(#5)}{\xbox(#3,*)[l]{$#4$}(#5)}%
+  }{%
+    \IfBooleanTF{#1}{\xbox*<$#2$>(*,*)[l]{$#4$}(#5)}{\xbox<$#2$>(*,*)[l]{$#4$}(#5)}%
+  }%
+}
+\DeclareDocumentCommand \cbox { s d<> O{0pt} m D(){+0pt,+0pt} }{%
+  \IfNoValueTF{#2}{%
+    \IfBooleanTF{#1}{\xbox*(#3,*)[c]{#4}(#5)}{\xbox(#3,*)[c]{#4}(#5)}%
+  }{%
+    \IfBooleanTF{#1}{\xbox*<#2>(*,*)[c]{#4}(#5)}{\xbox<#2>(*,*)[c]{#4}(#5)}%
+  }%
+}
+\DeclareDocumentCommand \Cbox { s d<> O{0pt} m D(){+0pt,+0pt} }{%
+  \IfNoValueTF{#2}{%
+    \IfBooleanTF{#1}{\xbox*(#3,*)[c]{$#4$}(#5)}{\xbox(#3,*)[c]{$#4$}(#5)}%
+  }{%
+    \IfBooleanTF{#1}{\xbox*<$#2$>(*,*)[c]{$#4$}(#5)}{\xbox<$#2$>(*,*)[c]{$#4$}(#5)}%
+  }%
+}
+\DeclareDocumentCommand \zbox { s m D(){+0pt,+0pt} }{%
+    \IfBooleanTF{#1}{\xbox*(0pt,0pt)[l]{#2}(#3)}{\xbox(0pt,0pt)[l]{#2}(#3)}%
+}
+\DeclareDocumentCommand \Zbox { s m D(){+0pt,+0pt} }{%
+    \IfBooleanTF{#1}{\xbox*(0pt,0pt)[l]{$#2$}(#3)}{\xbox(0pt,0pt)[l]{$#2$}(#3)}%
+}

@@ -1,0 +1,338 @@
+
+\documentclass[12pt]{article}
+
+\usepackage[]{xbox}
+
+\usepackage[a4paper]{geometry} % Seitenlayout, Standard: A4 Portrait
+\geometry{left=2cm,right=2cm,top=1.2cm,bottom=1.2cm}
+\pagestyle{empty}
+
+\def\baseline{%
+  \par\makebox[0pt][l]{\rule[0.0ex]{\linewidth}{0.3pt}}%
+  \par\makebox[0pt][l]{\makebox[\linewidth]{%
+    \makebox[0pt][r]{base }\hrulefill \makebox[0pt][l]{ line}}}~~%
+}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{2ex}
+
+\newlength{\lengthvar}\setlength{\lengthvar}{1ex}
+
+\setboolean{frame}{false} % true: jede xbox mit frame!
+
+
+\begin{document}
+
+\section*{xbox -- \sl power out of the box \h \normalsize\rm Matthias Bornhofen, 20.10.2020}
+
+Usage: \verb| \xbox*[t][2ex]<Wort>(+2cm,+2cm)[bl]{...}(xoffset,xoffset) |
+
+
+\subsection*{Raise} % ---------------------------------------------------------
+
+Das ist ein normaler Text. \hqqqq
+$2x + \sqrt{x^2-1} + 2y$ 
+
+Das \xbox*{ist} ein \xbox*{normaler} Text. \hqqqq
+$2x + \Xbox*{\sqrt{x^2-1}} + 2y$ 
+
+Das \xbox*{ist}(*,+1ex) ein \xbox*{normaler}(*,-1ex) Text. \hqqqq
+$2x + \Xbox*{\sqrt{x^2-1}}(*,+1ex) + 2y$ 
+
+Das \xbox*<ist>{*} ein \xbox*<normaler>{\bf -piep-} Text. \hqqqq
+$2x + \Xbox*<\sqrt{x^2-1}>{x^2} + 2y$ 
+
+\vx
+
+\subsection*{Frame} % ---------------------------------------------------------
+
+\def\OBJ{\rule[-2mm]{1cm}{1cm}}
+
+\baseline
+A \xbox{\OBJ} B
+...
+A \xbox*{\phantom{\OBJ}} B
+...
+...
+A \xbox(1cm,1cm){\xbox*{\phantom{\OBJ}}} B
+...
+A \xbox(1cm,1cm){\fbox{\xbox{\OBJ}}} B
+
+\vx
+
+\subsection*{Baseline} % ------------------------------------------------------
+
+\baseline
+X
+\xbox*(3pt,3pt)[tl]{...\rule[-1cm]{1ex}{4cm}...}%
+\hqq
+\xbox*(3pt,3pt)[cl]{...\rule[-1cm]{1ex}{4cm}...}%
+\hqq
+\xbox*(3pt,3pt)[bl]{...\rule[-1cm]{1ex}{4cm}...}%
+\hqqqq
+X
+\xbox*[t](3pt,3pt)[tl]{...\rule[-1cm]{1ex}{4cm}...}%
+\hqq
+\xbox*[t](3pt,3pt)[cl]{...\rule[-1cm]{1ex}{4cm}...}%
+\hqq
+\xbox*[t](3pt,3pt)[bl]{...\rule[-1cm]{1ex}{4cm}...}%
+\hqqqq
+X
+\xbox*[c](3pt,3pt)[tl]{...\rule[-1cm]{1ex}{4cm}...}%
+\hqq
+\xbox*[c](3pt,3pt)[cl]{...\rule[-1cm]{1ex}{4cm}...}%
+\hqq
+\xbox*[c](3pt,3pt)[bl]{...\rule[-1cm]{1ex}{4cm}...}%
+\hqqqq
+X
+\xbox*[b](3pt,3pt)[tl]{...\rule[-1cm]{1ex}{4cm}...}%
+\hqq
+\xbox*[b](3pt,3pt)[cl]{...\rule[-1cm]{1ex}{4cm}...}%
+\hqq
+\xbox*[b](3pt,3pt)[bl]{...\rule[-1cm]{1ex}{4cm}...}%
+
+\v
+
+\subsection*{Offset \& Padding} % ---------------------------------------------
+
+\newlength{\size}\setlength{\size}{0pt}
+
+\newcommand{\testoffset}[2][1cm]{\setlength{\size}{#1}%
+
+\baseline \h[\size]
+\xbox*[b](\size,\size){#2}(-0.5\size,+0.5\size)
+\xbox*[b](\size,\size){#2}(+0.0\size,+0.5\size)
+\xbox*[b](\size,\size){#2}(+0.5\size,+0.5\size)
+\h
+\xbox*[b](\size,\size)[tl]{#2}(0.1\size,0.1\size)
+\xbox*[b](\size,\size)[tc]{#2}(0.0\size,0.1\size)
+\xbox*[b](\size,\size)[tr]{#2}(0.1\size,0.1\size)
+\h
+\baseline \h[\size]
+\xbox*[b](\size,\size){#2}(-0.5\size,+0.0\size)
+\xbox*[b](\size,\size){#2}(+0.0\size,+0.0\size)
+\xbox*[b](\size,\size){#2}(+0.5\size,+0.0\size)
+\h
+\xbox*[b](\size,\size)[cl]{#2}(0.1\size,0.1\size)
+\xbox*[b](\size,\size)[cc]{#2}(0.0\size,0.1\size)
+\xbox*[b](\size,\size)[cr]{#2}(0.1\size,0.1\size)
+\h
+\baseline \h[\size]
+\xbox*[b](\size,\size){#2}(-0.5\size,-0.5\size)
+\xbox*[b](\size,\size){#2}(+0.0\size,-0.5\size)
+\xbox*[b](\size,\size){#2}(+0.5\size,-0.5\size)
+\h
+\xbox*[b](\size,\size)[bl]{#2}(0.1\size,0.1\size)
+\xbox*[b](\size,\size)[bc]{#2}(0.0\size,0.1\size)
+\xbox*[b](\size,\size)[br]{#2}(0.1\size,0.1\size)
+\h
+
+}
+
+\testoffset[1cm]{\rule{0.3cm}{0.3cm}}
+
+
+\clearpage
+\subsection*{Global Raise} % --------------------------------------------------
+
+\baseline
+\hq
+[]
+\xbox*[*][-0.0]{xyz\rule[-2.0ex]{1ex}{8ex}}
+\xbox*[*][-1.0]{xyz\rule[-2.0ex]{1ex}{8ex}}
+\xbox*[*][-2.0]{xyz\rule[-2.0ex]{1ex}{8ex}}
+\hqqq
+[t]
+\xbox*[t][-0.0]{xyz\rule[-2.0ex]{1ex}{8ex}}
+\xbox*[t][-1.0]{xyz\rule[-2.0ex]{1ex}{8ex}}
+\xbox*[t][-2.0]{xyz\rule[-2.0ex]{1ex}{8ex}}
+\hq
+[m]
+\xbox*[m][-0.0]{xyz\rule[-2.0ex]{1ex}{8ex}}
+\xbox*[m][-1.0]{xyz\rule[-2.0ex]{1ex}{8ex}}
+\xbox*[m][-2.0]{xyz\rule[-2.0ex]{1ex}{8ex}}
+\hq
+[b]
+\xbox*[b][ 0.0]{xyz\rule[-2.0ex]{1ex}{8ex}}
+\xbox*[b][-1.0]{xyz\rule[-2.0ex]{1ex}{8ex}}
+\xbox*[b][-2.0]{xyz\rule[-2.0ex]{1ex}{8ex}}
+
+
+\subsection*{Tabular \& Other} % ----------------------------------------------
+
+\baseline
+\fbox{\begin{tab}[t]{l} a \\ b \\ c \end{tab}}
+\fbox{\begin{tab}[c]{l} a \\ b \\ c \end{tab}}
+\fbox{\begin{tab}[b]{l} a \\ b \\ c \end{tab}}
+...
+...
+\xbox[m](2ex,*){\begin{tab}{l} . \\ . \\ c \end{tab}}
+\xbox[m](2ex,*){\begin{tab}{l} . \\ b \\ c \end{tab}}
+\xbox[m](2ex,*){\begin{tab}{l} a \\ b \\ c \end{tab}}
+...
+...
+\xbox[t]{\begin{tab}{l} a \\ b \\ c \end{tab}}
+\xbox[m]{\begin{tab}{l} a \\ b \\ c \end{tab}}
+\xbox[b]{\begin{tab}{l} a \\ b \\ c \end{tab}}
+...
+\xbox{\begin{tab}[t]{l} a \\ b \\ c \end{tab}}
+\xbox{\begin{tab}[m]{l} a \\ b \\ c \end{tab}}
+\xbox{\begin{tab}[b]{l} a \\ b \\ c \end{tab}}
+...
+\xbox[t]{\begin{tab}{l} a \\ b \\ c \end{tab}}
+\xbox{\begin{tab}[t]{l} a \\ b \\ c \end{tab}}
+.
+\xbox[m]{\begin{tab}{l} a \\ b \\ c \end{tab}}
+\xbox{\begin{tab}[m]{l} a \\ b \\ c \end{tab}}
+.
+\xbox[b]{\begin{tab}{l} a \\ b \\ c \end{tab}}
+\xbox{\begin{tab}[b]{l} a \\ b \\ c \end{tab}}
+...
+...
+\xbox*[t](+5ex,*)[l]{\begin{tab}{l} a \\ b \\ c \end{tab}}
+\xbox*[m](+5ex,*)[c]{\begin{tab}{l} a \\ b \\ c \end{tab}}
+\xbox*[b](+5ex,*)[r]{\begin{tab}{l} a \\ b \\ c \end{tab}}
+
+\def\xy{\ast}
+
+\baseline
+\xbox*   (+2ex,2cm){\xy}
+\hqq
+\xbox*[t](+2ex,2cm){\xy}
+\xbox*[m](+2ex,2cm){\xy}
+\xbox*[b](+2ex,2cm){\xy}
+\hqq
+\xbox*   (+2ex,2cm)[tl]{\xy}
+\xbox*   (+2ex,2cm)[tc]{\xy}
+\xbox*   (+2ex,2cm)[tr]{\xy}
+\hqq
+\xbox*   (+2ex,2cm)[cl]{\xy}
+\xbox*   (+2ex,2cm)[cc]{\xy}
+\xbox*   (+2ex,2cm)[cr]{\xy}
+\hqq
+\xbox*   (+2ex,2cm)[bl]{\xy}
+\xbox*   (+2ex,2cm)[bc]{\xy}
+\xbox*   (+2ex,2cm)[br]{\xy}
+
+\baseline
+
+
+\v[2cm]
+
+A \_ B
+
+% --- Diagnostics -------------------------------------------------------------
+
+\newcounter{diagnosticspage}
+
+\def\testpage#1{%
+
+\stepcounter{diagnosticspage}
+\subsection*{Diagnostics \#\thediagnosticspage}
+
+\baseline
+#1
+\hq []
+\xbox*(+2ex,3cm)[]{#1} 
+\xbox*(+2ex,2cm)[]{#1} 
+\xbox*(+2ex,1cm)[]{#1} 
+\hq [t]
+\xbox*(+2ex,3cm)[t]{#1} 
+\xbox*(+2ex,2cm)[t]{#1} 
+\xbox*(+2ex,1cm)[t]{#1} 
+\hq [m]
+\xbox*(+2ex,3cm)[m]{#1} 
+\xbox*(+2ex,2cm)[m]{#1} 
+\xbox*(+2ex,1cm)[m]{#1} 
+\hq [b]
+\xbox*(+2ex,3cm)[b]{#1} 
+\xbox*(+2ex,2cm)[b]{#1} 
+\xbox*(+2ex,1cm)[b]{#1} 
+
+\baseline
+[t]
+\hq []
+\xbox*[t](+2ex,3cm)[]{#1} 
+\xbox*[t](+2ex,2cm)[]{#1} 
+\xbox*[t](+2ex,1cm)[]{#1} 
+\hq [t]
+\xbox*[t](+2ex,3cm)[t]{#1} 
+\xbox*[t](+2ex,2cm)[t]{#1} 
+\xbox*[t](+2ex,1cm)[t]{#1} 
+\hq [m]
+\xbox*[t](+2ex,3cm)[m]{#1} 
+\xbox*[t](+2ex,2cm)[m]{#1} 
+\xbox*[t](+2ex,1cm)[m]{#1} 
+\hq [b]
+\xbox*[t](+2ex,3cm)[b]{#1} 
+\xbox*[t](+2ex,2cm)[b]{#1} 
+\xbox*[t](+2ex,1cm)[b]{#1} 
+
+\baseline
+[m]
+\hq []
+\xbox*[m](+2ex,3cm)[]{#1} 
+\xbox*[m](+2ex,2cm)[]{#1} 
+\xbox*[m](+2ex,1cm)[]{#1} 
+\hq [t]
+\xbox*[m](+2ex,3cm)[t]{#1} 
+\xbox*[m](+2ex,2cm)[t]{#1} 
+\xbox*[m](+2ex,1cm)[t]{#1} 
+\hq [m]
+\xbox*[m](+2ex,3cm)[m]{#1} 
+\xbox*[m](+2ex,2cm)[m]{#1} 
+\xbox*[m](+2ex,1cm)[m]{#1} 
+\hq [b]
+\xbox*[m](+2ex,3cm)[b]{#1} 
+\xbox*[m](+2ex,2cm)[b]{#1} 
+\xbox*[m](+2ex,1cm)[b]{#1} 
+
+\baseline
+[b]
+\hq []
+\xbox*[b](+2ex,3cm)[]{#1} 
+\xbox*[b](+2ex,2cm)[]{#1} 
+\xbox*[b](+2ex,1cm)[]{#1} 
+\hq [t]
+\xbox*[b](+2ex,3cm)[t]{#1} 
+\xbox*[b](+2ex,2cm)[t]{#1} 
+\xbox*[b](+2ex,1cm)[t]{#1} 
+\hq [m]
+\xbox*[b](+2ex,3cm)[m]{#1} 
+\xbox*[b](+2ex,2cm)[m]{#1} 
+\xbox*[b](+2ex,1cm)[m]{#1} 
+\hq [b]
+\xbox*[b](+2ex,3cm)[b]{#1} 
+\xbox*[b](+2ex,2cm)[b]{#1} 
+\xbox*[b](+2ex,1cm)[b]{#1} 
+
+\baseline
+
+\baseline
+#1
+\hq [t][]
+\xbox*[t](+2ex,+1cm)[]{#1}
+\xbox*[t](+2ex,*)[]{#1}
+\xbox*[t](+2ex,-1cm)[]{#1}
+\xbox*[t](+2ex,-2cm)[]{#1} 
+\hq [][t]
+\xbox*(+2ex,+1cm)[t]{#1}
+\xbox*(+2ex,*)[t]{#1}
+\xbox*(+2ex,-1cm)[t]{#1}
+\xbox*(+2ex,-2cm)[t]{#1} 
+\hq [t][t]
+\xbox*[t](+2ex,+1cm)[t]{#1}
+\xbox*[t](+2ex,*)[t]{#1}
+\xbox*[t](+2ex,-1cm)[t]{#1}
+\xbox*[t](+2ex,-2cm)[t]{#1} 
+
+}%
+
+
+\clearpage \testpage{\rule[-2cm]{2ex}{2cm}}
+\clearpage \testpage{\rule[-1cm]{2ex}{2cm}}
+\clearpage \testpage{\rule[ 0cm]{2ex}{2cm}}
+\clearpage \testpage{A}
+
+
+\end{document}
